@@ -1,3 +1,11 @@
+//Creating this document to remember my process for creating, loading, and verifying this data
+//Zrzl code in CDE in ^X19798UCGRAPH
+//Copy-paste screen output to Excel and save three separate .csv files
+//Upload csv files to Github 
+//Use the listed Cypher queries to load the data into Neo4j database
+//Sample queries of the data at the bottom
+
+//DATA LOAD 
 LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/kblanks/uc_graph/main/tlk.csv" as tlk
 merge (conv:Conversation {convID: tlk.TLK_ID})
     on create set conv.convName = tlk.CONV_TITLE
@@ -21,3 +29,20 @@ MERGE (conv)-[op:CONTAINS]->(user)
 
 MATCH (c:Conversation)-[]-(u:User)
 RETURN c,u LIMIT 10;
+
+//SAMPLE QUERIES
+//All conversations for a single user
+MATCH (c:Conversation)-[]-(u:User {userID:'BCOE2'})
+RETURN c,u
+
+//Top 10 users by conversation count
+MATCH (c:Conversation)-[r]-(u:User)
+RETURN u.userID,count(r) as Conv_Count
+ORDER BY Conv_Count DESC
+LIMIT 10;
+
+//All related nodes for Conversations involving a specific user
+MATCH (c:Conversation)-[]-(u:User {userID:'JCASTE12'})
+WITH c
+MATCH (c)--(u2)
+RETURN c,u2
