@@ -46,3 +46,11 @@ MATCH (c:Conversation)-[]-(u:User {userID:'JCASTE12'})
 WITH c
 MATCH (c)--(u2)
 RETURN c,u2
+
+//Top users most frequently involved in Conversations with a specific user
+MATCH (c:Conversation)-[]-(u:User {userID:'JCASTE12'})
+WITH c
+MATCH (c)-[r]-(u2)
+RETURN u2.userID,count(r) as conv_count
+ORDER BY conv_count desc 
+LIMIT 6
